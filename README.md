@@ -150,6 +150,11 @@ now there should be a new folder like ``./<Appname>-linux-x64/``. Inside, there 
 ./WebexHs-Mannheim-linux-x64/WebexHs-Mannheim 
 ```
 
+The app should open with the URL you specified in the nativefier command. In the menu bar, there should now be the new Menu item containing the entries you made.
+Bonus: The last entry says meeting URL, but it lets you enter basically an url to which it will then take you.  
+
+Do what you like with the ``./<Appname>-linux-x64/`` folder. Install it by creating a .desktop file for the containing executable or just execute it from there.  Have fun.
+
 ## License
 
 [MIT](LICENSE.md)
