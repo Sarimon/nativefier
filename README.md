@@ -118,13 +118,13 @@ A submenu needs a label, the type "submenu" and an array *submenu*. This array c
 
 ## how to use / install
 
-open a terminal.
+open a terminal. You'll need nodejs / npm , git (install from your distro's package manager) and sudo rights for this. 
 ```mkdir temp
 cd temp
 git clone https://github.com/Sarimon/nativefier.git
 cd ./nativefier
 ``` 
-put now the config.json in exactly this folder.
+put now the config.json in exactly this folder (root folder of nativefy).
 
 ```
 npm install
