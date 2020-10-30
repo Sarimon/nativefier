@@ -1,5 +1,13 @@
 import { Menu, clipboard, shell, MenuItemConstructorOptions } from 'electron';
 
+// put config.json in root folder
+const config = require("../../../config.json");
+
+var URLMapping = {};
+export function getURLMappings() : object {
+  return URLMapping;
+}
+
 export function createMenu({
   nativefierVersion,
   appQuit,
@@ -12,6 +20,7 @@ export function createMenu({
   getCurrentUrl,
   clearAppData,
   disableDevTools,
+  gotolink,
 }): void {
   const zoomResetLabel =
     zoomBuildTimeValue === 1.0
@@ -212,6 +221,70 @@ export function createMenu({
       },
     ],
   };
+  
+  var submenu = [];
+
+  // helper functions to dynamically create the menu 
+  const create_entry = (element: object): object => {
+
+    if (element["type"] === "entry") {
+      let object = {};
+      object["label"] = element["label"];
+      object["click"] = () => {gotolink(element["id"])};
+      
+      URLMapping[element["id"]] = element["url"];
+      
+      return object;
+    } else if (element["type"] === "separator") {
+      let object = {
+        type : "separator"
+      };
+      return object;
+    }
+  };
+  const create_submenu = (element: object): object => {
+
+    if (element["type"] === "entry" || element["type"] === "separator"){
+      return create_entry(element);
+   } else {
+      let object = {};
+      let menu = element["submenu"];
+
+      object["label"] = element["label"]; 
+      object["submenu"] = [];
+
+      menu.forEach(element => {
+        let submenu_obj = create_submenu(element);
+        object["submenu"].push(submenu_obj);
+      }); 
+
+      return object;
+    }
+
+  };
+
+  // function that goes through the config
+  config["submenu"].forEach(element => {
+    if(element["type"] === "entry" || element["type"] === "separator") {
+      
+      let object = create_entry(element);
+      submenu.push(object);        
+
+    } else if (element["type"] === "submenu"){
+      let object = create_submenu(element);
+      submenu.push(object);
+    }
+  });
+
+  submenu.push({type: 'separator',},);
+  submenu.push({label: 'custom Meeting URL', click: () => {gotolink("custom")},},);
+
+// create the final menu 
+  const bookmarkMenu : MenuItemConstructorOptions = {
+    label: '&' + config["Menutitle"],
+    role: 'window',
+    submenu: submenu
+  };
 
   const helpMenu: MenuItemConstructorOptions = {
     label: '&Help',
@@ -283,7 +356,7 @@ export function createMenu({
     );
     menuTemplate = [electronMenu, editMenu, viewMenu, windowMenu, helpMenu];
   } else {
-    menuTemplate = [editMenu, viewMenu, windowMenu, helpMenu];
+    menuTemplate = [editMenu, viewMenu, windowMenu, helpMenu, bookmarkMenu];
   }
 
   const menu = Menu.buildFromTemplate(menuTemplate);
