@@ -15,7 +15,7 @@ import {
 } from '../helpers/helpers';
 import { initContextMenu } from './contextMenu';
 import { onNewWindowHelper } from './mainWindowHelpers';
-+import { createMenu, getURLMappings } from './menu';
+import { createMenu, getURLMappings } from './menu';
 
 const ZOOM_INTERVAL = 0.1;
 
