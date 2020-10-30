@@ -1,89 +1,154 @@
 # Nativefier
 
-[![Build Status](https://travis-ci.org/jiahaog/nativefier.svg)](https://travis-ci.org/jiahaog/nativefier)
-[![npm version](https://badge.fury.io/js/nativefier.svg)](https://www.npmjs.com/package/nativefier)
+A fork from https://github.com/jiahaog/nativefier. I've just added a thing for myself where i can create a new menu item from a config.json in the root directory.
 
-![Dock](docs/dock.png)
+## config.json
 
-You want to make a native wrapper for WhatsApp Web (or any web page).
+the config.json contains basically this structure:
 
-```bash
-nativefier web.whatsapp.com
+```json
+{
+    "Menutitle" : "The label that the menu item will get",
+    "submenu" : [
+    {..},
+    {..},
+    {..}
+   ]
+}
 ```
 
-![Walkthrough animation](docs/walkthrough.gif)
+There are three types of entries to put in the root submenu:
+### 1. normal entry 
+Each single entry must have an unique id, a label and the corresponding url + their entry type.
+```json
+{
+    "id": "yahoo",
+    "label": "Yahoo",
+    "url": "https://www.Yahoo.de",
+    "type": "entry"
+}
+```
+### 2. separator
+separators just need their type specified:
+```json
+{
+    "type": "separator"
+}
+```
+### 3. submenus
+A submenu needs a label, the type "submenu" and an array *submenu*. This array can contain more entries, separators or even more submenus.
+```json
 
-You're done.
+{
+    "label": "Submenu 1",
+    "type": "submenu",
+    "submenu": [
+        {
+            "id": "google",
+            "label": "Google",
+            "url": "https://www.google.de",
+            "type": "entry"
+        },
+        {
+            "label": "Submenu in submenu",
+            "type": "submenu",
+            "submenu": [
+                {
+                    "id": "amazon",
+                    "label": "Amazon",
+                    "url": "https://www.amazon.de",
+                    "type": "entry"
+                }
+            ]
+        }
 
-## Introduction
+    ]
+}
+``` 
 
-Nativefier is a command-line tool to easily create a desktop app for any web site
-with minimal configuration. Apps are wrapped by [Electron](https://www.electronjs.org/)
-(which uses Chromium under the hood) in an OS executable (`.app`, `.exe`, etc)
-for use on Windows, macOS and Linux.
+### 4. Example json.config
 
-I did this because I was tired of having to `⌘-tab` or `alt-tab` to my browser and then search
-through the numerous open tabs when I was using [Facebook Messenger](https://messenger.com) or
-[Whatsapp Web](https://web.whatsapp.com) ([HN thread](https://news.ycombinator.com/item?id=10930718)). Nativefier features:
+```
+{
+    "Menutitle" : "Bookmarks",
+    "submenu" : [
+        {
+            "id": "github",
+            "label": "Github",
+            "url": "https://www.github.com",
+            "type": "entry"
+        },
+        {
+            "type": "separator"
+        },
+        {
+            "id": "yahoo",
+            "label": "Yahoo",
+            "url": "https://www.Yahoo.de",
+            "type": "entry"
+        },
+        {
+            "label": "Submenu",
+            "type": "submenu",
+            "submenu": [
+                {
+                    "id": "google",
+                    "label": "Google",
+                    "url": "https://www.google.de",
+                    "type": "entry"
+                },
+                {
+                    "label": "Submenu in submenu",
+                    "type": "submenu",
+                    "submenu": [
+                        {
+                            "id": "amazon",
+                            "label": "Amazon",
+                            "url": "https://www.amazon.de",
+                            "type": "entry"
+                        }
+                    ]
+                }
 
-- Automatically retrieval of app icon / name.
-- JavaScript and CSS injection.
-- Many more, see the [API docs](docs/api.md) or `nativefier --help`
-
-## Installation
-
-- macOS 10.9+ / Windows / Linux
-- [Node.js](https://nodejs.org/) `>= 10` and npm `>= 6`
-- Optional dependencies:
-    - [ImageMagick](http://www.imagemagick.org/) to convert icons.
-      Make sure `convert` and `identify` are in your system `$PATH`.
-    - [Wine](https://www.winehq.org/) to package Windows apps under non-Windows platforms.
-      Make sure `wine` is in your system `$PATH`.
-
-Then, install Nativefier globally with  `npm install -g nativefier`
-
-## Usage
-
-To create a native desktop app for [medium.com](https://medium.com),
-simply  `nativefier "medium.com"`
-
-Nativefier will try to determine the app name, and well as lots of other options.
-If desired, these options can be overwritten. For example, to override the name,
-`nativefier --name 'My Medium App' 'medium.com'`
-
-**Read the [API documentation](docs/api.md) or run `nativefier --help`**
-to learn about other command-line flags usable to configure the packaged app.
-
-To have high-resolution icons used by default for an app/domain, please
-contribute to the [icon repository](https://github.com/jiahaog/nativefier-icons)!
-
-## Usage with Docker
-
-Nativefier is also usable from Docker.
-- Pull the latest stable image from Docker Hub: `docker pull jiahaog/nativefier`
-- ... or build the image yourself: `docker build -t local/nativefier .`
-  (in this case, replace `jiahaog/` in the below examples with `local/`)
-
-By default, the command `nativefier --help` will be executed.
-To build e.g. a Gmail nativefier app to a writable local `~/nativefier-apps`,
-
-```bash
-docker run -v ~/nativefier-apps:/target/ jiahaog/nativefier https://mail.google.com/ /target/
+            ]
+        }
+    ]
+}
 ```
 
-You can pass Nativefier flags, and mount volumes to provide local files. For example, to use an icon,
+## how to use / install
 
-```bash
-docker run -v ~/my-icons-folder/:/src -v $TARGET-PATH:/target jiahaog/nativefier --icon /src/icon.png --name whatsApp -p linux -a x64 https://web.whatsapp.com/ /target/
+open a terminal.
+```mkdir temp
+cd temp
+git clone https://github.com/Sarimon/nativefier.git
+cd ./nativefier
+``` 
+put now the config.json in exactly this folder.
+
+```
+npm install
+npm run build
+sudo npm link
+cd ..
+npm link "nativefier"
+``` 
+
+See the original github page for instructions. Basically for our purposes, the comman is like this:
+```
+nativefier -n <App name> -p linux -a x64 --show-menu-bar --internal-urls "<a regex defining what is an internal url>" <target URL to nativefy> <target path>
+``` 
+for example:
+
+```
+nativefier -n "Webex Hs-Mannheim" -p linux -a x64 --show-menu-bar --internal-urls ".*.webex.com.*|.*web.zoom.us.*" https://hs-mannheim.webex.com/ . 
 ```
 
-## Development
+now there should be a new folder like ``./<Appname>-linux-x64/``. Inside, there is an executable``<Appname>`` file. in our case:
 
-Help welcome on [bugs](https://github.com/jiahaog/nativefier/issues?q=is%3Aopen+is%3Aissue+label%3Abug) and
-[feature requests](https://github.com/jiahaog/nativefier/issues?q=is%3Aopen+is%3Aissue+label%3Afeature-request).
-
-[Developer / build docs](docs/development.md), [API documentation](docs/api.md), 
-[Changelog](CHANGELOG.md).
+```json
+./WebexHs-Mannheim-linux-x64/WebexHs-Mannheim 
+```
 
 ## License
 
