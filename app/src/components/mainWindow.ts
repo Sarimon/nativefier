@@ -15,7 +15,7 @@ import {
 } from '../helpers/helpers';
 import { initContextMenu } from './contextMenu';
 import { onNewWindowHelper } from './mainWindowHelpers';
-import { createMenu } from './menu';
++import { createMenu, getURLMappings } from './menu';
 
 const ZOOM_INTERVAL = 0.1;
 
@@ -165,6 +165,36 @@ export function createMainWindow(
     withFocusedWindow((focusedWindow: BrowserWindow) =>
       adjustWindowZoom(focusedWindow, ZOOM_INTERVAL),
     );
+  };
+  
+  const URLMappings = getURLMappings();
+  const gotolink = async (index): Promise<void> => {
+  
+    if (index in URLMappings) {
+      withFocusedWindow((focusedWindow: BrowserWindow) =>
+        focusedWindow.loadURL(URLMappings[index])
+      );
+    } else if(index === "custom") {
+       
+      const Alert = require("electron-alert");
+
+      let alert = new Alert();
+
+      let swalOptions = {
+        input: 'url',
+        inputLabel: 'URL address',
+        inputPlaceholder: 'Enter the URL'
+      };
+
+      let promise = alert.fireFrameless(swalOptions, "Enter meeting invite URL", null, false);
+      promise.then((result) => {
+        if (result.value) {
+          mainWindow.loadURL(result.value)
+          let alert2 = new Alert();
+          alert2.fireFrameless({title:"Success", text: "Website is being loaded", type: "success",showConfirmButton: true,timer: 2000}, null, true, false);
+        }
+      })
+    }    
   };
 
   const onZoomOut = (): void => {
@@ -324,6 +354,7 @@ export function createMainWindow(
     getCurrentUrl,
     clearAppData,
     disableDevTools: options.disableDevTools,
+    gotolink: gotolink
   };
 
   createMenu(menuOptions);
