@@ -72,7 +72,10 @@
     "sanitize-filename": "1.x",
     "shelljs": "0.x",
     "source-map-support": "0.x",
-    "tmp": "0.x"
+    "tmp": "0.x",
+    "electron-alert": "^0.1.11",
+    "sweetalert2": "^10.8.1"
+
   },
   "devDependencies": {
     "@types/jest": "26.x",
